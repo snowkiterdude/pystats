@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>pystats</title>
+        <style>
+            .center { border: 5px solid; margin: auto; width: 50%; padding: 10px;}
+            table, tr, td { border: 5px solid; margin: auto; width: 50%; padding: 10px;}
+        </style>
+    </head>
+    <body>
+        <div class="center">
+            <a href="/json">json</a><br />
+            <a href="/yaml">yaml</a>
+        </div>
+        <div class="center">
+            <table>
+                <!-- <tr>
+                    <th>heading 1</th>
+                    <th>heading 2</th>
+                    <th>heading 3</th>
+                  </tr> -->
+                  <tr>
+                    {%- for key, val in system.items() %}
+                    <td>{{ key }}</td>
+                    <td>{{ val }}</td>
+                    {%- endfor %}
+                  </tr>
+            </table>
+        </div>
+    </body>
+</html>
