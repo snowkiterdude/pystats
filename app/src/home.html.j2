@@ -2,32 +2,68 @@
     <head>
         <title>pystats</title>
         <style>
-            .center { border: 5px solid; margin: auto; width: 50%; padding: 10px;}
-            table, tr, td { border: 5px solid; margin: auto; width: 50%; padding: 10px;}
+            #heading { margin: auto; width: 50%; padding: 10px; }
+            table {
+                border-collapse:separate;
+                border:solid black 5px;
+                border-radius: 20px;
+                margin: auto;
+                width: 90%;
+                padding: 10px;
+            }
+            div {
+                padding: 10px;
+            }
+            td, th {
+                border-left:solid black 1px;
+                border-top:solid black 1px;
+            }
+
+            th {
+                background-color: rgb(86, 86, 87);
+                border-top: none;
+            }
+
+            td:first-child, th:first-child {
+                border-left: none;
+            }
         </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+        var main = function() {
+        $("thead").on("click", function() {
+            $(this).parents("table").find("tbody").toggle();
+        });
+
+        }
+        $(document).ready(main);
+    </script>
     </head>
     <body>
-        <div class="center">
-            <a href="/json">json</a><br />
-            <a href="/yaml">yaml</a>
+        <div id="heading">
+            <h1>PyStats</h1>
+            <h5><a href="/yaml">Yaml</a></h5>
+            <h5><a href="/json">Json</a></h5>
         </div>
         {%- for type_name, type_values in stats.items() %}
         <div>
-            <h1>{{ type_name }}</h1>
             <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Value</th>
-                </tr>
-                {%- for key, val in type_values.items() %}
-                <tr>
-                    <td>{{ key }}</td>
-                    <td>{{ val }}</td>
-                </tr>
+                {% set title = type_name | capitalize if type_name != "cpu" else type_name | upper %}
+                <thead>
+                    <tr>
+                        <th colspan="2"><h1>{{ title }}</h1></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%- for key, val in type_values.items() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ val }}</td>
+                    </tr>
+                </tbody>
                 {%- endfor %}
             </table>
         </div>
         {%- endfor %}
-
     </body>
 </html>
