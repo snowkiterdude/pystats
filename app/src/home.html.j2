@@ -11,20 +11,23 @@
             <a href="/json">json</a><br />
             <a href="/yaml">yaml</a>
         </div>
-        <div class="center">
+        {%- for type_name, type_values in stats.items() %}
+        <div>
+            <h1>{{ type_name }}</h1>
             <table>
-                <!-- <tr>
-                    <th>heading 1</th>
-                    <th>heading 2</th>
-                    <th>heading 3</th>
-                  </tr> -->
-                  <tr>
-                    {%- for key, val in system.items() %}
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                </tr>
+                {%- for key, val in type_values.items() %}
+                <tr>
                     <td>{{ key }}</td>
                     <td>{{ val }}</td>
-                    {%- endfor %}
-                  </tr>
+                </tr>
+                {%- endfor %}
             </table>
         </div>
+        {%- endfor %}
+
     </body>
 </html>

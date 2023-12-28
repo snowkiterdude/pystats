@@ -16,4 +16,4 @@ class StatsHtml(Stats):
         self.refresh_stats()
         with open("src/home.html.j2", encoding="utf-8") as file:
             template = Template(file.read())
-        return template.render(self.stats)
+        return template.render(stats=self.stats)

@@ -8,7 +8,6 @@ from src.stats_html import StatsHtml
 HTML = StatsHtml()
 app = Flask(__name__)
 
-
 @app.route("/")
 def home():
     """home - output html"""
@@ -31,3 +30,14 @@ def yaml_out():
 
 if __name__ == "__main__":
     serve(app, host="0.0.0.0", port=8080)
+
+
+
+
+
+# python:3.10.13-alpine3.19
+# apk add build-base linux-headers
+# python -m pip install psutil
+
+
+
