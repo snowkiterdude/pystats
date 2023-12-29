@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ pystats - return system stats """
 import yaml
-from flask import Flask, jsonify, make_response, render_template
+from flask import Flask, jsonify, make_response, render_template, request
 from waitress import serve
 from src.stats import Stats
 
@@ -11,7 +11,9 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     """home - output html"""
-    return render_template("home.html", stats=stats.get_stats())
+    if request.args.get('fast') == "true":
+        return render_template("home.html", stats=stats.get_stats(True))
+    return render_template("home.html", stats=stats.get_stats(False))
 
 @app.route("/json")
 def json_out():

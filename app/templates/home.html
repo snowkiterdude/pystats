@@ -3,7 +3,6 @@
     <head>
         <title>pystats</title>
         <style>
-            #heading { margin: auto; width: 50%; padding: 10px; }
             table {
                 border-collapse:separate;
                 border:solid black 5px;
@@ -12,6 +11,7 @@
                 width: 90%;
                 padding: 10px;
             }
+            h1 {text-align: center;}
             div {
                 padding: 10px;
             }
@@ -28,6 +28,14 @@
             td:first-child, th:first-child {
                 border-left: none;
             }
+
+
+            .heading {
+                width: 100%;
+                text-align: center;
+            }
+
+
         </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
@@ -41,10 +49,16 @@
     </script>
     </head>
     <body>
-        <div id="heading">
+        <div class="heading">
             <h1>PyStats</h1>
+        </div>
+        <dev>
             <h5><a href="/yaml">Yaml</a></h5>
             <h5><a href="/json">Json</a></h5>
+            {% if request.args.get('fast') != "true" %}
+            <h5><a href="/?fast=true">fast</a></h5>
+            {% endif %}
+            <h5><a href="/">all stats</a></h5>
         </div>
         {%- for type_name, type_values in stats.items() %}
         <div>
