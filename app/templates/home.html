@@ -3,37 +3,108 @@
     <head>
         <title>pystats</title>
         <style>
-            table {
+            /* table {
                 border-collapse:separate;
                 border:solid black 5px;
-                border-radius: 20px;
+                border-radius: 10px;
                 margin: auto;
-                width: 90%;
-                padding: 10px;
+                width: 98%;
+                padding: 0px;
+            }
+            thead {
+                padding: 0px;
             }
             h1 {text-align: center;}
             div {
-                padding: 10px;
+                padding: 5px;
             }
             td, th {
                 border-left:solid black 1px;
                 border-top:solid black 1px;
+                padding: 5px;
             }
-
             th {
                 background-color: rgb(86, 86, 87);
                 border-top: none;
             }
-
             td:first-child, th:first-child {
                 border-left: none;
             }
-
-
+            thead {
+                margin: 0px;
+            }
             .heading {
+                padding: 1px;
+                width: 100%;
+                text-align: center;
+            } */
+            /* #stats {
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            #stats td, #stats th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #stats tr:nth-child(even){
+                background-color: #f2f2f2;
+            }
+
+            #stats tr:hover {
+                background-color: #ddd;
+            }
+
+            #stats th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #04AA6D;
+                color: white;
+            }
+ */
+
+            html {
+                background-color: #101b17;
+                color: #ddd;
+            }
+            .heading {
+                padding: 1px;
                 width: 100%;
                 text-align: center;
             }
+            #stats {
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+                border-radius: 10px;
+            }
+
+            #stats td, #stats th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #stats tr:nth-child(even){
+                background-color: #f2f2f2;
+            }
+
+            #stats tr:hover {
+                background-color: #007449;
+            }
+
+            #stats th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #04AA6D;
+                color: white;
+            }
+
+
+
 
 
         </style>
@@ -52,17 +123,15 @@
         <div class="heading">
             <h1>PyStats</h1>
         </div>
-        <dev>
-            <h5><a href="/yaml">Yaml</a></h5>
-            <h5><a href="/json">Json</a></h5>
-            {% if request.args.get('fast') != "true" %}
-            <h5><a href="/?fast=true">fast</a></h5>
-            {% endif %}
-            <h5><a href="/">all stats</a></h5>
+        <div class="heading">
+            <a href="/yaml">Yaml</a>
+            <a href="/json">Json</a>
+            <a href="/">all stats</a>
+            <a href="/?fast=true">fast</a>
         </div>
         {%- for type_name, type_values in stats.items() %}
         <div>
-            <table>
+            <table id="stats">
                 {% set title = type_name | capitalize if type_name != "cpu" else type_name | upper %}
                 <thead>
                     <tr>
