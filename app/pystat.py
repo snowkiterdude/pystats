@@ -1,29 +1,28 @@
 #!/usr/bin/env python3
 """ pystats - return system stats """
 import yaml
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, render_template
 from waitress import serve
-from src.stats_html import StatsHtml
+from src.stats import Stats
 
-HTML = StatsHtml()
+stats = Stats()
 app = Flask(__name__)
 
 @app.route("/")
 def home():
     """home - output html"""
-    return HTML.get_html()
-
+    return render_template("home.html", stats=stats.get_stats())
 
 @app.route("/json")
 def json_out():
     """json - ouput json"""
-    return jsonify(HTML.get_stats())
+    return jsonify(stats.get_stats())
 
 
 @app.route("/yaml")
 def yaml_out():
     """yaml - output yaml"""
-    response = make_response(yaml.dump(HTML.get_stats(), indent=2), 200)
+    response = make_response(yaml.dump(stats.get_stats(), indent=2), 200)
     response.mimetype = "text/plain"
     return response
 
