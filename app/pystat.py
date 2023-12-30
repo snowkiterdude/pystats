@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """ pystats - return system stats """
 import yaml
-from flask import Flask, jsonify, make_response, render_template, request
+import os
+from flask import Flask, jsonify, make_response, render_template, request, send_from_directory
 from waitress import serve
 from src.stats import Stats
 
@@ -27,6 +28,18 @@ def yaml_out():
     response = make_response(yaml.dump(stats.get_stats(), indent=2), 200)
     response.mimetype = "text/plain"
     return response
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static/images'),
+                          'favicon.ico',mimetype='image/vnd.microsoft.icon')
+
+@app.route('/favicon.jpeg')
+def fav_image():
+    return send_from_directory(os.path.join(app.root_path, 'static/images'),
+                          'favicon.jpeg',mimetype='image/vnd.microsoft.icon')
+
 
 
 if __name__ == "__main__":
