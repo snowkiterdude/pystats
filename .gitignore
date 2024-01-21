@@ -1,6 +1,10 @@
 
 app/static/images/favicon.ico
 app/static/images/favicon.jpeg
+app/test.py
+app/test.db
+app/requests.db
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
