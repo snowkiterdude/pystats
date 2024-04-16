@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <h1 class="heading">Servers</h1>
+    <h3 class="heading">Total Servers: {{ req_total }}</h3>
+    <table id="stats">
+        <thead>
+            <tr>
+                <th><h3>ServerID</h3></th>
+                <th><h3># of Requests</h3></th>
+                <th><h3>Hostname</h3></th>
+                <th><h3>IP</h3></th>
+                <th><h3>Platform</h3></th>
+            </tr>
+        </thead>
+        <tbody>
+            {%- for row in srv_tbl %}
+            <tr>
+                {%- for val in row %}
+                <td>{{ val }}</td>
+                {%- endfor %}
+            </tr>
+        </tbody>
+        {%- endfor %}
+    </table>
+</div>
+{% include 'pagination.html' %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{# adust for the next page load and zero offset #}
+{%- set offset = 2 if request.path == "/requests" else 1 %}
+{%- set end_of_records = req_total - pn_count + offset %}
+{%- set past_end_of_records = req_total + pn_count + 9999 %}
+
+{%- set prev_page_start = pn_start - pn_count  %}
+{%- set prev_page_start = prev_page_start if prev_page_start > 0 else 1 %}
+{%- set prev_page_start = prev_page_start if prev_page_start < end_of_records else end_of_records - pn_count - offset + 1 %}
+
+{%- set next_page_start = pn_start + pn_count %}
+{%- set next_page_start = next_page_start if next_page_start > 0 else 1 -%}
+{%- set next_page_start = next_page_start if next_page_start < end_of_records else past_end_of_records %}
+
+{%- set end_start = past_end_of_records %}
+{%- set end_start = end_start if end_start > 0 else 1 -%}
+<div class="heading">
+    <br>
+    <h1>
+        <a href="{{ request.path }}?pnstart=1&pncount={{ pn_count }}">&lt;&lt;</a>
+        <a href="{{ request.path }}?pnstart={{ prev_page_start}}&pncount={{ pn_count }}">&lt;</a>
+        <a href="{{ request.path }}?pnstart={{ next_page_start }}&pncount={{ pn_count }}">&gt;</a>
+        <a href="{{ request.path }}?pnstart={{ end_start }}&pncount={{ pn_count }}">&gt;&gt;</a>
+    </h1>
+</div>

@@ -1,0 +1,18 @@
+[project]
+name = "pystats_snowkiterdude"
+version = "0.0.1"
+authors = [
+  { name="Pete", email="nr@gmail.com" },
+]
+description = "pystats - display basic system stats"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/snowkiterdude/pystats"
+Issues = "https://github.com/snowkiterdude/pystats/issues"

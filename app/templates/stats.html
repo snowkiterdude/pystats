@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for type_name, type_values in stats.items() %}
+<div>
+    <table id="stats">
+        {% set title = type_name | capitalize if type_name != "cpu" else type_name | upper %}
+        <thead>
+            <tr>
+                <th colspan="2"><h1>{{ title }}</h1></th>
+            </tr>
+        </thead>
+        <tbody>
+            {%- for key, val in type_values.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ val }}</td>
+            </tr>
+        </tbody>
+        {%- endfor %}
+    </table>
+</div>
+{%- endfor %}
+<div>
+    <table id="stats">
+        <thead>
+            <tr>
+                <th colspan="2"><h1>Requests</h1></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Total number of requests</td>
+                <td>{{ req_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

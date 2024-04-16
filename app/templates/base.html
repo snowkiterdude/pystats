@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PyStats {% block title %}{% endblock %}</title>
+        <link rel="icon" href="favicon.ico">
+        <style>
+            #stats {
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            #stats td {
+                border: 1px solid #ddd;
+                padding: 5px;
+            }
+            #stats th {
+                border: 1px solid #ddd;
+                padding: 0px;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                text-align: center;
+                background-color: #04AA6D;
+                color: white;
+            }
+            #stats tr:hover {
+                background-color: #007449;
+            }
+            h1 {
+                padding: 0px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            a:link, a:visited {
+                color: white;
+                text-decoration: none;
+            }
+            a:hover {
+                color: #007449;
+            }
+            html {
+                background-color: #101b17;
+                color: #ddd;
+            }
+            .heading {
+                padding-left: 5px;
+                padding-right: 5px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                width: 100%;
+                text-align: center;
+            }
+            .heading a {
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+            }
+        </style>
+{% block style %}{% endblock %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>
+            var main = function() {
+                $("thead").on("click", function() {
+                    $(this).parents("table").find("tbody").toggle();
+                });
+            }
+            $(document).ready(main);
+        </script>
+{% block header %}{% endblock %}
+    </head>
+    <body>
+        <div class="heading">
+            <h1><a href="/">PyStats</a></h1>
+            <h3>
+                <a href="/">Metrics</a> |
+                <a href="/?fast=true">Fast</a> |
+                <a href="/servers">Servers</a> |
+                <a href="/requests">Requests</a>
+            </h3>
+        </div>
+{% block content %}{% endblock %}
+        <div class="heading">
+            <h5>
+                <a href="/yaml"><b>Output Types</b></a><br>
+                <a href="/yaml">Yaml</a> |
+                <a href="/json">JSON</a> |
+                <a href="/metrics">Prometheus</a> |
+                <a href="/">HTML</a>
+            </h5>
+        </div>
+    </body>
+</html>

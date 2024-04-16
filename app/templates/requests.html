@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <h1 class="heading">Requests</h1>
+    <h3 class="heading">Total Requests: {{ req_total }}</h3>
+    <table id="stats">
+        <thead>
+            <tr>
+                <th><h3>RequestID</h3></th>
+                <th><h3>Epoch</h3></th>
+                <th><h3>RemoteAddress</h3></th>
+                <th><h3>RemoteUserAgent</h3></th>
+                <th><h3>RequestURL</h3></th>
+                <th><h3>ServerID</h3></th>
+            </tr>
+        </thead>
+        <tbody>
+            {%- for row in req_tbl %}
+            <tr>
+                {%- for val in row %}
+                <td>{{ val }}</td>
+                {%- endfor %}
+            </tr>
+        </tbody>
+        {%- endfor %}
+    </table>
+</div>
+{% include 'pagination.html' %}
+{% endblock %}
