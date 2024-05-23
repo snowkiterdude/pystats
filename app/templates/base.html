@@ -11,7 +11,6 @@
             }
             #stats td {
                 border: 1px solid #ddd;
-                padding: 5px;
             }
             #stats th {
                 border: 1px solid #ddd;
@@ -21,9 +20,18 @@
                 text-align: center;
                 background-color: #04AA6D;
                 color: white;
+                cursor: pointer;
             }
-            #stats tr:hover {
-                background-color: #007449;
+            td a {
+                display: block;
+                padding: 5px;
+            }
+            th a {
+                display: block;
+                padding: 5px;
+            }
+            th h3:hover{
+                color: #007449;
             }
             h1 {
                 padding: 0px;
@@ -79,14 +87,5 @@
             </h3>
         </div>
 {% block content %}{% endblock %}
-        <div class="heading">
-            <h5>
-                <a href="/yaml"><b>Output Types</b></a><br>
-                <a href="/yaml">Yaml</a> |
-                <a href="/json">JSON</a> |
-                <a href="/metrics">Prometheus</a> |
-                <a href="/">HTML</a>
-            </h5>
-        </div>
     </body>
 </html>

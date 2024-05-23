@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div>
-    <h1 class="heading">Requests</h1>
+    <h1 class="heading">Requests for {{ srv_name[0] }}:{{ srv_name[1] }}</h1>
     <h3 class="heading">Total Requests: {{ req_total }}</h3>
     <table id="stats">
         <thead>
@@ -18,16 +18,12 @@
             {%- for row in req_tbl %}
             <tr>
                 {%- for val in row %}
-                    {%- if loop.index == 6 %}
-                        <td><a href="/srv_requests?srv_id={{ row[5] }}">{{ val }}</a></td>
-                    {%- else %}
-                        <td>{{ val }}</td>
-                    {%- endif %}
+                <td>{{ val }}</td>
                 {%- endfor %}
             </tr>
         </tbody>
         {%- endfor %}
     </table>
 </div>
-{% include 'pagination.html' %}
+{% include 'srv_pagination.html' %}
 {% endblock %}

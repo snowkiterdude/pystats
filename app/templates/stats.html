@@ -2,12 +2,13 @@
 
 {% block content %}
 {% for type_name, type_values in stats.items() %}
+{% if type_values | length > 0 %}
 <div>
     <table id="stats">
-        {% set title = type_name | capitalize if type_name != "cpu" else type_name | upper %}
+        {%- set title = type_name | capitalize if type_name != "cpu" else type_name | upper %}
         <thead>
             <tr>
-                <th colspan="2"><h1>{{ title }}</h1></th>
+                <th colspan="2"><h3>{{ title }}</h3></th>
             </tr>
         </thead>
         <tbody>
@@ -20,12 +21,13 @@
         {%- endfor %}
     </table>
 </div>
+{% endif %}
 {%- endfor %}
 <div>
     <table id="stats">
         <thead>
             <tr>
-                <th colspan="2"><h1>Requests</h1></th>
+                <th colspan="2"><h3>Requests</h3></th>
             </tr>
         </thead>
         <tbody>
@@ -35,5 +37,14 @@
             </tr>
         </tbody>
     </table>
+</div>
+<div class="heading">
+    <h5>
+        <b>Output Types</b><br>
+        <a href="/yaml">Yaml</a> |
+        <a href="/json">JSON</a> |
+        <a href="/metrics">Prometheus</a> |
+        <a href="/">HTML</a>
+    </h5>
 </div>
 {% endblock %}

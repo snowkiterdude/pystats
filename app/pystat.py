@@ -36,7 +36,7 @@ def stats():
     fast = True if request.args.get("fast") == "true" else False
     return render_template(
         "stats.html",
-        stats=STATS.get_stats(fast),
+        stats=STATS.get_stats(fast, CFG.labels),
         req_total=REQS.get_req_total(),
     )
 
@@ -70,6 +70,24 @@ def requests():
         req_total=REQS.get_req_total(),
     )
 
+
+@app.route("/srv_requests")
+def srv_requests():
+    REQS.put_request(request.remote_addr, request.user_agent, request.url)
+    """ srv_requests - pystats requests """
+    url_srv_id = request.args.get("srv_id", 1, int)
+    url_pn_page = request.args.get("pnpage", 1, int)
+    url_pn_count = request.args.get("pncount", 10, int)
+    return render_template(
+        "srv_requests.html",
+        req_tbl=REQS.get_srv_requests(url_srv_id, url_pn_page, url_pn_count),
+        srv_id=url_srv_id,
+        srv_name=REQS.get_srv_socket(url_srv_id),
+        pn_page=url_pn_page,
+        pn_count=url_pn_count,
+        req_total=REQS.get_srv_req_tot(url_srv_id),
+        last_record=REQS.get_srv_last_rec(url_srv_id),
+    )
 
 @app.route("/json")
 def json_out():

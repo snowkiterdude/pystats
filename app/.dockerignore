@@ -1,5 +1,0 @@
-**/__pycache__
-requests.db
-build.sh
-.dockerignore
-Dockerfile

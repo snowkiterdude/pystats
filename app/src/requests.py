@@ -18,7 +18,7 @@ class Requests:
         self.db_active = self._db_init()
         self.server_id = self._add_server()
 
-    def _db_init(self):
+    def _db_init(self) -> bool:
         """ initialize the database"""
         try:
             with closing(sqlite3.connect(self.db_path)) as con:
@@ -45,7 +45,7 @@ class Requests:
                         )"""
                     )
                     return True
-        except TypeError:
+        except (TypeError, sqlite3.OperationalError):
             self.log.warning("Could not connect to DB: %s", self.db_path)
         return False
 
@@ -79,13 +79,13 @@ class Requests:
                     our_id = cur.fetchone()
         return int(our_id[0])
 
-    def put_request(self, remote_addr, remote_user_agent, request_url):
+    def put_request(self, remote_addr, remote_user_agent, request_url) -> bool:
         """write request data to the sqlite date base"""
         if not self.db_active:
             msg = "put request: No DB Connection:"
-            msg += " remote_addr {remote_addr},"
-            msg += " remote_user_agent {remote_user_agent},"
-            msg += " request_url {request_url}"
+            msg += f" remote_addr {remote_addr},"
+            msg += f" remote_user_agent {remote_user_agent},"
+            msg += f" request_url {request_url}"
             self.log.warning(msg)
             return False
         with closing(sqlite3.connect(self.db_path)) as con:
@@ -116,7 +116,7 @@ class Requests:
         """get the total number of requests"""
         if not self.db_active:
             self.log.warning("get_req_total: No DB Connection")
-            return None
+            return 0
         with closing(sqlite3.connect(self.db_path)) as con:
             with closing(con.cursor()) as cur:
                 cur.execute(
@@ -128,7 +128,7 @@ class Requests:
         """get total number of servers"""
         if not self.db_active:
             self.log.warning("get_srv_total: No DB Connection")
-            return None
+            return 0
         with closing(sqlite3.connect(self.db_path)) as con:
             with closing(con.cursor()) as cur:
                 cur.execute(
@@ -138,12 +138,16 @@ class Requests:
 
     def _parse_min_max(self, pn_start, pn_count, req_total):
         """ get the min and max ids for pagination and sanitize for integers """
-        min = int(pn_start)
-        min = min if min > 0 else 1
-        max_min = int(req_total) - int(pn_count -1 )
-        min = min if min <= max_min else max_min
-        max = min + int(pn_count - 1)
-        return (min, max)
+        try:
+            min = int(pn_start)
+            min = min if min > 0 else 1
+            pn_count = int(pn_count) if pn_count < 100 else 100
+            max_min = int(req_total) - int(pn_count -1 )
+            min = min if min <= max_min else max_min
+            max = min + int(pn_count - 1)
+            return (min, max)
+        except TypeError:
+            return(1, 10)
 
     def get_srvs(self, pn_start=1, pn_count=10):
         """ get all the servers: list of tuple """
@@ -151,7 +155,7 @@ class Requests:
         min, max = self._parse_min_max(pn_start, pn_count, self.get_srv_total())
         if not self.db_active:
             self.log.warning("get_srvs: No DB Connection")
-            return None
+            return [("N0 Data", "N0 Data", "N0 Data", "N0 Data", "N0 Data")]
         with closing(sqlite3.connect(self.db_path)) as con:
             with closing(con.cursor()) as cur:
                 sql = f"""
@@ -162,26 +166,18 @@ class Requests:
                 """
                 data = cur.execute(sql).fetchall()
         for row in data:
-            srv_id = int(row[0])
-            with closing(sqlite3.connect(self.db_path)) as con:
-                with closing(con.cursor()) as cur:
-                    sql = f"""
-                        SELECT COUNT(ServerID)
-                        FROM requests
-                        WHERE ServerID = {srv_id}
-                    """
-                    srv_req_tot = cur.execute(sql).fetchone()[0]
             # ServerID,srv_req_tot,Hostname,IP,Platform
-            new_rec = (srv_id,srv_req_tot,str(row[1]),str(row[2]),str(row[3]))
-            srvs_tbl.append(new_rec)
+            rec = (row[0],self.get_srv_req_tot(row[0]),str(row[1]),str(row[2]),str(row[3]))
+            srvs_tbl.append(rec)
         return srvs_tbl
+
 
     def get_requests(self, pn_start=1, pn_count=10):
         """ get all the requests: list of tuple """
-        min, max = self._parse_min_max(pn_start, pn_count, self.get_req_total())
         if not self.db_active:
             self.log.warning("get_requests: No DB Connection")
-            return None
+            return [("N0 Data", "N0 Data", "N0 Data", "N0 Data", "N0 Data", "N0 Data")]
+        min, max = self._parse_min_max(pn_start, pn_count, self.get_req_total())
         with closing(sqlite3.connect(self.db_path)) as con:
             with closing(con.cursor()) as cur:
                 sql = f"""
@@ -191,3 +187,69 @@ class Requests:
                     ORDER BY RequestID ASC
                 """
                 return cur.execute(sql).fetchall()
+
+
+    def get_srv_req_tot(self, srv_id):
+        """ get number of requests for server """
+        if not self.db_active:
+            self.log.warning("get_srv_req_tot: No DB Connection")
+            return 0
+        with closing(sqlite3.connect(self.db_path)) as con:
+            with closing(con.cursor()) as cur:
+                sql = f"""
+                    SELECT COUNT(ServerID)
+                    FROM requests
+                    WHERE ServerID = {int(srv_id)}
+                """
+                return cur.execute(sql).fetchone()[0]
+
+    def get_srv_socket(self, srv_id):
+        """ get the hostname and ip of a server """
+        if not self.db_active:
+            self.log.get_srv_socket("get_requests: No DB Connection")
+            return ("N/A","N/A")
+        with closing(sqlite3.connect(self.db_path)) as con:
+            with closing(con.cursor()) as cur:
+                sql = f"""
+                    SELECT Hostname,IP
+                    FROM servers
+                    WHERE ServerID = {int(srv_id)}
+                """
+                data = cur.execute(sql).fetchone()
+                return (data[0], data[1])
+
+    def get_srv_requests(self, srv_id, pn_page=1, pn_count=10):
+        """ get all the requests: list of tuple """
+        if not self.db_active:
+            self.log.warning("get_requests: No DB Connection")
+            return [("N0 Data", "N0 Data", "N0 Data", "N0 Data", "N0 Data", "N0 Data")]
+        pn_start = ( int(pn_page) - 1 ) * pn_count
+        with closing(sqlite3.connect(self.db_path)) as con:
+            with closing(con.cursor()) as cur:
+                sql = f"""
+                    SELECT RequestID,Epoch,RemoteAddress,RemoteUserAgent,RequestURL,ServerID
+                    FROM requests
+                    WHERE ServerID = {int(srv_id)}
+                    ORDER BY RequestID ASC
+                    Limit {int(pn_start)},{int(pn_count)}
+                """
+                return cur.execute(sql).fetchall()
+
+    def get_srv_last_rec(self, srv_id):
+        """ get the last page of records """
+        if not self.db_active:
+            self.log.warning("get_srv_end_start: No DB Connection")
+            return 0
+        with closing(sqlite3.connect(self.db_path)) as con:
+            with closing(con.cursor()) as cur:
+                sql = f"""
+                    SELECT RequestID
+                    FROM requests
+                    WHERE ServerID = {srv_id}
+                    ORDER BY RequestID DESC
+                    LIMIT 1
+                """
+                rec = cur.execute(sql).fetchone()[0]
+                if rec:
+                    return rec
+                return 0

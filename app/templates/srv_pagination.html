@@ -1,0 +1,12 @@
+
+{%- set last_page = (req_total / pn_count) | int %}
+<div class="heading">
+    <br>
+    <h1>
+        <a href="{{ request.path }}?pnpage=1&pncount={{ pn_count }}">&lt;&lt;</a>
+        <a href="{{ request.path }}?srv_id={{ srv_id }}&pnpage={{ pn_page - 1}}&pncount={{ pn_count }}">&lt;</a>
+        <a href="{{ request.path }}?srv_id={{ srv_id }}&pnpage={{ pn_page + 1 }}&pncount={{ pn_count }}">&gt;</a>
+        <a href="{{ request.path }}?srv_id={{ srv_id }}&pnpage={{ last_page }}&pncount={{ pn_count }}">&gt;&gt;</a>
+    </h1>
+</div>
+{{ req_total / last_record }}

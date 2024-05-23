@@ -4,8 +4,6 @@ import time
 import platform
 import psutil
 from dateutil.relativedelta import relativedelta
-
-
 from .logger import get_logger
 
 
@@ -16,33 +14,28 @@ class Stats:
         self.stats = {}
         self.log = get_logger()
 
-    def _refresh_stats(self, fast=False):
+    def _refresh_stats(self, fast=False, labels=[]):
         """fetch the system stats"""
         self.stats = {}
+        self.stats["info"] = {}
         self.stats["uptime"] = {}
         self.stats["cpu"] = {}
         self.stats["mem"] = {}
-        self.stats["info"] = {}
-        if fast:
-            self.stats["info"]["hostname"] = os.uname()[1]
-            self.stats["uptime"]["process_seconds"] = self._get_proc_uptime_sec()
-            self.stats["uptime"]["process_uptime"] = self._get_uptime_human_readable(
-                self.stats["uptime"]["process_seconds"]
-            )
-            self.stats["uptime"]["system_seconds"] = self._get_sys_uptime_sec()
-            self.stats["uptime"]["system_uptime"] = self._get_uptime_human_readable(
-                self.stats["uptime"]["system_seconds"]
-            )
-        else:
-            self.stats["uptime"]["process_seconds"] = self._get_proc_uptime_sec()
-            self.stats["uptime"]["process_uptime"] = self._get_uptime_human_readable(
-                self.stats["uptime"]["process_seconds"]
-            )
-            self.stats["uptime"]["system_seconds"] = self._get_sys_uptime_sec()
-            self.stats["uptime"]["system_uptime"] = self._get_uptime_human_readable(
-                self.stats["uptime"]["system_seconds"]
-            )
-
+        for label in labels:
+            if len(label.split("=")) == 2:
+                self.stats["info"][str(label.split("=")[0])] = str(label.split("=")[1])
+        self.stats["info"]["hostname"] = os.uname()[1]
+        self.stats["info"]["platform"] = self._get_platform_var(platform.platform)
+        self.stats["info"]["uname"] = str(self._get_platform_var(platform.uname))
+        self.stats["uptime"]["process_seconds"] = self._get_proc_uptime_sec()
+        self.stats["uptime"]["process_uptime"] = self._get_uptime_human_readable(
+            self.stats["uptime"]["process_seconds"]
+        )
+        self.stats["uptime"]["system_seconds"] = self._get_sys_uptime_sec()
+        self.stats["uptime"]["system_uptime"] = self._get_uptime_human_readable(
+            self.stats["uptime"]["system_seconds"]
+        )
+        if not fast:
             self.stats["cpu"]["load_1m"] = psutil.getloadavg()[0]
             self.stats["cpu"]["load_5m"] = psutil.getloadavg()[1]
             self.stats["cpu"]["load_15m"] = psutil.getloadavg()[2]
@@ -77,13 +70,12 @@ class Stats:
                 psutil.virtual_memory()[2] / (1024 * 1024)
             )
 
-            self.stats["info"]["hostname"] = os.uname()[1]
+
             self.stats["info"]["architecture"] = str(self._get_platform_var(
                 platform.architecture
             ))
             self.stats["info"]["machine"] = self._get_platform_var(platform.machine)
             self.stats["info"]["node"] = self._get_platform_var(platform.node)
-            self.stats["info"]["platform"] = self._get_platform_var(platform.platform)
             self.stats["info"]["processor"] = self._get_platform_var(platform.processor)
             self.stats["info"]["python_build"] = str(self._get_platform_var(
                 platform.python_build
@@ -106,15 +98,14 @@ class Stats:
             self.stats["info"]["release"] = self._get_platform_var(platform.release)
             self.stats["info"]["system"] = self._get_platform_var(platform.system)
             self.stats["info"]["version"] = self._get_platform_var(platform.version)
-            self.stats["info"]["uname"] = str(self._get_platform_var(platform.uname))
             self.stats["info"]["freedesktop_os_release"] = self._get_platform_var(
                 platform.freedesktop_os_release
             )
             self.stats["info"]["system_alias"] = self._get_platform_system_alias()
 
-    def get_stats(self, fast=False):
+    def get_stats(self, fast=False, labels=[]):
         """return the stats dictionary"""
-        self._refresh_stats(fast)
+        self._refresh_stats(fast, labels)
         return self.stats
 
     def _get_platform_var(self, func):

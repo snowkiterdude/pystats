@@ -12,21 +12,35 @@ Persistent Volumes or custom prometheus metrics endpoint.
 DB_PATH = """
 The full file path to your sqlite file for the requests database.
 DEFAULT: /var/lib/pystats/requests.db
+
+
 """
 CREATE_PATH = """
 Flag to create the parent directory path to the db file or not
 allowing auto creation of a DB file.
 DEFAULT: False
+
+
 """
 WEB_HOST = """
 The IP or Hostname for the flask web socket.
 DEFAULT: 0.0.0.0
+
+
 """
 WEB_PORT = """
 The TCP Port for the flask web socket.
 DEFAULT: 8080
-"""
 
+
+"""
+LABELS = """
+Labels for info section of stats output
+e.g. -l 'cluster=my-cluster' -l 'service=my-svc'
+DEFAULT: None
+
+
+"""
 
 def parse_cfg():
     """Arguments via argparse"""
@@ -64,7 +78,15 @@ def parse_cfg():
         type=str,
         default="8080",
     )
-
+    parser.add_argument(
+        "--labels",
+        "-l",
+        dest="labels",
+        help=LABELS,
+        type=str,
+        default=[],
+        action="append",
+    )
     cfg = parser.parse_args()
     if cfg.crate_path:
         db_dir = os.path.dirname(cfg.db_path)

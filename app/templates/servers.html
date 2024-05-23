@@ -17,11 +17,11 @@
             {%- for row in srv_tbl %}
             <tr>
                 {%- for val in row %}
-                <td>{{ val }}</td>
+                <td><a href="/srv_requests?srv_id={{ row[0] }}">{{ val }}</a></td>
                 {%- endfor %}
             </tr>
+            {%- endfor %}
         </tbody>
-        {%- endfor %}
     </table>
 </div>
 {% include 'pagination.html' %}
