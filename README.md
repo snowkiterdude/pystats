@@ -16,8 +16,9 @@ docker run --rm snowkiterdude/pystats:latest -h
 Run the web application in the background
 ```
 mkdir pystats;
-docker run --name pystats --rm -d -p 80:8080 -v "pystats:/var/lib/pystats" snowkiterdude/pystats:latest;
+docker run --name pystats -d -p 8080:8080 -v "pystats:/var/lib/pystats" snowkiterdude/pystats:latest;
 ```
+http://localhost:8080/?fast=true
 
 # todo
   * basic system stats in Prometheus formate at /metrics

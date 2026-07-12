@@ -29,6 +29,32 @@ REQS = Requests(CFG.db_path)
 app = Flask(__name__)
 
 
+def is_database_connected():
+    """Simulate a database connection check."""
+    try:
+        srv_id = REQS.get_srv_id()
+        if srv_id:
+            return True
+    except Exception as e:
+        LOG.error("DB connection check failed: %s", e)
+        return False
+
+
+@app.route('/live', methods=['GET'])
+def liveness_probe():
+    """Liveness probe: Determines if the container needs a restart."""
+    return jsonify({"status": "alive"}), 200
+
+
+@app.route('/ready', methods=['GET'])
+def readiness_probe():
+    """Readiness probe: Determines if the container can accept live network traffic."""
+    # Check your critical background dependencies here
+    if not is_database_connected():
+        return jsonify({"status": "unready", "reason": "Database disconnected"}), 503
+    return jsonify({"status": "ready"}), 200
+
+
 @app.route("/")
 def stats():
     """stats - node stats"""
